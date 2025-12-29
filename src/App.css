@@ -1,0 +1,265 @@
+/* src/App.css */
+
+/* ... (Keep all your existing styles for .app, h1, .search, .container, .movie, etc. unchanged) ... */
+/* ... IF YOU WANT TO BE SAFE, REPLACE THE ENTIRE FILE WITH THE CODE BELOW ... */
+
+.app {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Glass Effect Background */
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding-bottom: 4rem;
+}
+
+/* Header */
+h1 {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 5rem;
+  letter-spacing: 2px;
+  background: linear-gradient(180deg, #ff4b4b 0%, #bd0000 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  width: 100%;
+  text-align: center;
+  margin: 3rem 0 2rem 0;
+  text-shadow: 0px 10px 20px rgba(189, 0, 0, 0.2);
+  cursor: default;
+}
+
+/* Search Bar */
+.search {
+  width: 70%;
+  max-width: 600px;
+  margin: 0 auto 4rem auto;
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.75rem;
+  border-radius: 50px;
+  background: rgba(30, 30, 30, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.search input {
+  flex: 1;
+  border: none;
+  font-size: 1.1rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  padding-right: 1rem;
+  outline: none;
+  color: #fff;
+  background: transparent;
+}
+
+.search img {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+/* Movie Grid */
+.container {
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+}
+
+/* Movie Card */
+.movie {
+  width: 280px;
+  background-color: rgba(16, 16, 16, 0.9);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+  backdrop-filter: blur(5px);
+}
+
+.movie:hover {
+  transform: scale(1.03);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+  border-color: #333;
+}
+
+.movie-image {
+  width: 100%;
+  height: 400px;
+  position: relative;
+}
+
+.movie-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.movie:hover .overlay { opacity: 1; }
+
+.view-btn {
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.8);
+  padding: 10px 24px;
+  border-radius: 30px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+}
+
+.view-btn:hover {
+  background-color: #e50914;
+  border-color: #e50914;
+}
+
+.movie-info { padding: 1.2rem; }
+.movie-info h3 { color: #fff; font-size: 1.1rem; margin-bottom: 0.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Montserrat', sans-serif;}
+.meta-info { display: flex; justify-content: space-between; color: #ccc; font-size: 0.9rem; }
+.type { color: #e50914; background: rgba(229, 9, 20, 0.1); padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+
+
+/* ========================================= */
+/* NEW POPUP MODAL STYLES (THE FIX)     */
+/* ========================================= */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Make the background overlay clickable but allow scrolling behind */
+  background-color: rgba(0, 0, 0, 0.6); 
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.modal-content {
+  background-color: #121212;
+  border: 1px solid #333;
+  color: #fff;
+  width: 100%;
+  max-width: 850px; /* Wider to fit content side-by-side */
+  max-height: 85vh; /* Never taller than 85% of screen height */
+  border-radius: 20px;
+  overflow: hidden; /* Clean edges */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  position: relative;
+  display: flex; /* Makes the layout horizontal */
+  flex-direction: row; /* Side by side! */
+}
+
+/* Left Side: The Poster */
+.modal-poster {
+  width: 40%; /* Takes up 40% of the modal width */
+  min-width: 300px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Right Side: The Content */
+.modal-body {
+  padding: 2.5rem;
+  width: 60%; /* Takes up the rest */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centers text vertically */
+  overflow-y: auto; /* Internal scroll only if text is HUGE */
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 2rem;
+  color: #aaa;
+  cursor: pointer;
+  background: none;
+  border: none;
+  z-index: 10;
+  transition: color 0.2s;
+}
+
+.modal-close:hover { color: #fff; }
+
+.modal-info h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.5rem;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.modal-meta {
+  font-size: 0.95rem;
+  color: #aaa;
+  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 15px;
+  font-weight: 500;
+}
+
+.modal-meta span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.modal-plot {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #d1d1d1;
+  margin-top: 1rem;
+  border-top: 1px solid #333;
+  padding-top: 1rem;
+}
+
+/* Mobile Fix: Stack them vertically on phones only */
+@media screen and (max-width: 768px) {
+  .modal-content {
+    flex-direction: column;
+    max-height: 90vh;
+    overflow-y: scroll; /* Allow scroll on mobile */
+  }
+  .modal-poster {
+    width: 100%;
+    height: 250px; /* Short banner style on phone */
+  }
+  .modal-body {
+    width: 100%;
+    padding: 1.5rem;
+    justify-content: flex-start;
+  }
+}
