@@ -1,20 +1,18 @@
 import React from "react";
 
-const MovieCard = ({ movie, onClick }) => {
-  // TMDB Image Base URL
-  const imgBaseURL = "https://image.tmdb.org/t/p/w500";
+const MovieCard = ({ data, onSelect }) => {
+  const IMG_PATH = "https://image.tmdb.org/t/p/w500";
 
   return (
-    // Pass movie.id instead of imdbID
-    <div className="movie" onClick={() => onClick(movie.id)}>
+    <div className="movie" onClick={() => onSelect(data.id)}>
       <div className="movie-image">
         <img
           src={
-            movie.poster_path
-              ? `${imgBaseURL}${movie.poster_path}`
+            data.poster_path
+              ? `${IMG_PATH}${data.poster_path}`
               : "https://via.placeholder.com/400"
           }
-          alt={movie.title}
+          alt={data.title}
         />
         <div className="overlay">
           <button className="view-btn">View Details</button>
@@ -22,11 +20,10 @@ const MovieCard = ({ movie, onClick }) => {
       </div>
 
       <div className="movie-info">
-        {/* TMDB uses 'title' (lowercase) not 'Title' */}
-        <h3>{movie.title}</h3>
+        <h3>{data.title}</h3>
         <div className="meta-info">
           <span className="year">
-            {movie.release_date ? movie.release_date.split("-")[0] : "N/A"}
+            {data.release_date ? data.release_date.split("-")[0] : "N/A"}
           </span>
           <span className="type">Movie</span>
         </div>
