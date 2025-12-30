@@ -2,8 +2,7 @@
 
 A movie discovery app built with React and Vite. This project focuses on custom CSS architecture (no external UI libraries) and efficient API handling to create a clean, responsive interface without layout shifts.
 ## 🔗 Live Demo
-
-[https://velocity-storefront.vercel.app/](https://movie-search-app-sand-tau.vercel.app/)
+(https://movie-search-app-sand-tau.vercel.app/)
 
 ## Overview
 
