@@ -1,28 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import MovieCard from './MovieCard';
-import './App.css';
-import searchIcon from './search.svg';
+import React, { useState, useEffect } from "react";
+import MovieCard from "./MovieCard";
+import "./App.css";
+import searchIcon from "./search.svg";
 
-const API_URL = 'https://www.omdbapi.com?apikey=11ddaa7d';
+// ---------------------------------------------------------
+// 🔑 PASTE YOUR TMDB API KEY HERE
+// ---------------------------------------------------------
+const API_KEY = "244b83e323bde6f3b54f61df522e64b1";
+const API_URL = "https://api.themoviedb.org/3";
 
 const App = () => {
   const [movies, setMovies] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedMovie, setSelectedMovie] = useState(null);
 
+  // 1. Search Function (TMDB)
   const searchMovies = async (title) => {
+    if (!title) return;
     try {
-      const response = await fetch(`${API_URL}&s=${title}`);
+      const response = await fetch(
+        `${API_URL}/search/movie?api_key=${API_KEY}&query=${title}`
+      );
       const data = await response.json();
-      setMovies(data.Search);
+      setMovies(data.results);
     } catch (error) {
       console.error("Error fetching movies:", error);
     }
   };
 
+  // 2. Details Function (TMDB)
+  // We need a second call to get extra details like "Runtime" and "Director"
+  // because the search result doesn't give everything.
   const fetchMovieDetail = async (id) => {
     try {
-      const response = await fetch(`${API_URL}&i=${id}`);
+      // Get core details
+      const response = await fetch(
+        `${API_URL}/movie/${id}?api_key=${API_KEY}&append_to_response=credits`
+      );
       const data = await response.json();
       setSelectedMovie(data);
     } catch (error) {
@@ -31,21 +45,20 @@ const App = () => {
   };
 
   useEffect(() => {
-    searchMovies('Avengers');
+    searchMovies("Avengers");
   }, []);
 
   return (
     <>
-      {/* 1. Main App Container (Search & Grid) */}
       <div className="app">
         <h1>CINESEARCH</h1>
 
         <div className="search">
           <input
-            placeholder="Search for movies"
+            placeholder="Search for movies..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && searchMovies(searchTerm)}
+            onKeyDown={(e) => e.key === "Enter" && searchMovies(searchTerm)}
           />
           <img
             src={searchIcon}
@@ -57,10 +70,10 @@ const App = () => {
         {movies?.length > 0 ? (
           <div className="container">
             {movies.map((movie) => (
-              <MovieCard 
-                movie={movie} 
-                key={movie.imdbID} 
-                onClick={fetchMovieDetail} 
+              <MovieCard
+                movie={movie}
+                key={movie.id}
+                onClick={fetchMovieDetail}
               />
             ))}
           </div>
@@ -69,43 +82,74 @@ const App = () => {
             <h2>No movies found</h2>
           </div>
         )}
-      </div> 
-      {/* 2. CLOSE THE APP DIV HERE to release the trap */}
+      </div>
 
-
-      {/* 3. The Modal is now a sibling, completely free to float on top */}
+      {/* 3. Modal Popup */}
       {selectedMovie && (
         <div className="modal-overlay" onClick={() => setSelectedMovie(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setSelectedMovie(null)}>
+            <button
+              className="modal-close"
+              onClick={() => setSelectedMovie(null)}
+            >
               &times;
             </button>
-            
-            {/* LEFT SIDE: POSTER */}
-            <img 
+
+            {/* POSTER */}
+            <img
               className="modal-poster"
-              src={selectedMovie.Poster !== 'N/A' ? selectedMovie.Poster : 'https://via.placeholder.com/400'} 
-              alt={selectedMovie.Title} 
+              src={
+                selectedMovie.poster_path
+                  ? `https://image.tmdb.org/t/p/w500${selectedMovie.poster_path}`
+                  : "https://via.placeholder.com/400"
+              }
+              alt={selectedMovie.title}
             />
 
-            {/* RIGHT SIDE: INFO */}
+            {/* INFO */}
             <div className="modal-body">
               <div className="modal-info">
-                <h2>{selectedMovie.Title}</h2>
+                <h2>{selectedMovie.title}</h2>
                 <div className="modal-meta">
-                  <span>{selectedMovie.Year}</span>
+                  {/* TMDB Date is YYYY-MM-DD, let's take just the Year */}
+                  <span>
+                    {selectedMovie.release_date
+                      ? selectedMovie.release_date.split("-")[0]
+                      : "N/A"}
+                  </span>
                   <span>•</span>
-                  <span>{selectedMovie.Runtime}</span>
+                  {/* Runtime is in minutes */}
+                  <span>
+                    {selectedMovie.runtime
+                      ? `${selectedMovie.runtime} min`
+                      : "N/A"}
+                  </span>
                   <span>•</span>
-                  <span>⭐ {selectedMovie.imdbRating}</span>
+                  <span>
+                    ⭐{" "}
+                    {selectedMovie.vote_average
+                      ? selectedMovie.vote_average.toFixed(1)
+                      : "N/A"}
+                  </span>
                 </div>
-                <p><strong>Genre:</strong> {selectedMovie.Genre}</p>
-                <p><strong>Director:</strong> {selectedMovie.Director}</p>
-                <p><strong>Actors:</strong> {selectedMovie.Actors}</p>
+
+                {/* Genres are an array in TMDB */}
+                <p>
+                  <strong>Genre:</strong>{" "}
+                  {selectedMovie.genres?.map((g) => g.name).join(", ")}
+                </p>
+
+                {/* Director is inside "credits.crew" */}
+                <p>
+                  <strong>Director:</strong>{" "}
+                  {selectedMovie.credits?.crew?.find(
+                    (person) => person.job === "Director"
+                  )?.name || "N/A"}
+                </p>
               </div>
 
               <div className="modal-plot">
-                <p>{selectedMovie.Plot}</p>
+                <p>{selectedMovie.overview}</p>
               </div>
             </div>
           </div>

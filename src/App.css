@@ -1,25 +1,22 @@
 /* src/App.css */
 
-/* ... (Keep all your existing styles for .app, h1, .search, .container, .movie, etc. unchanged) ... */
-/* ... IF YOU WANT TO BE SAFE, REPLACE THE ENTIRE FILE WITH THE CODE BELOW ... */
-
 .app {
   width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Glass Effect Background */
   background-color: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   padding-bottom: 4rem;
 }
 
-/* Header */
+/* Header - FIXED FOR MOBILE */
 h1 {
-  font-family: 'Bebas Neue', cursive;
-  font-size: 5rem;
+  font-family: "Bebas Neue", cursive;
+  /* This scales between 3rem (phone) and 6rem (desktop) automatically */
+  font-size: clamp(3.5rem, 10vw, 6rem);
   letter-spacing: 2px;
   background: linear-gradient(180deg, #ff4b4b 0%, #bd0000 100%);
   background-clip: text;
@@ -30,11 +27,12 @@ h1 {
   margin: 3rem 0 2rem 0;
   text-shadow: 0px 10px 20px rgba(189, 0, 0, 0.2);
   cursor: default;
+  line-height: 1;
 }
 
-/* Search Bar */
+/* Search Bar - FIXED WIDTH */
 .search {
-  width: 70%;
+  width: 90%; /* Mobile safe */
   max-width: 600px;
   margin: 0 auto 4rem auto;
   display: flex;
@@ -52,7 +50,7 @@ h1 {
   flex: 1;
   border: none;
   font-size: 1.1rem;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-weight: 500;
   padding-right: 1rem;
   outline: none;
@@ -67,38 +65,45 @@ h1 {
   opacity: 0.7;
 }
 
-/* Movie Grid */
+/* Movie Grid - UPDATED TO CSS GRID (The "Squish" Fix) */
 .container {
-  width: 90%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 2.5rem;
+  width: 95%;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  /* The Magic Grid: Auto-fit columns, never smaller than 220px */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2rem;
+
+  /* Center the grid items */
+  justify-items: center;
 }
 
-/* Movie Card */
+/* Movie Card - Adjusted width to 100% of grid cell */
 .movie {
-  width: 280px;
+  width: 100%; /* Takes full width of grid column */
+  max-width: 280px; /* But never gets huge */
   background-color: rgba(16, 16, 16, 0.9);
   border-radius: 16px;
   overflow: hidden;
   position: relative;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(5px);
+  cursor: pointer;
 }
 
 .movie:hover {
   transform: scale(1.03);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
   border-color: #333;
 }
 
 .movie-image {
   width: 100%;
-  height: 400px;
+  height: 380px; /* Fixed height for consistency */
   position: relative;
 }
 
@@ -111,7 +116,7 @@ h1 {
 .overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -119,15 +124,17 @@ h1 {
   transition: opacity 0.3s ease;
 }
 
-.movie:hover .overlay { opacity: 1; }
+.movie:hover .overlay {
+  opacity: 1;
+}
 
 .view-btn {
   background-color: transparent;
   color: #fff;
-  border: 1px solid rgba(255,255,255,0.8);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   padding: 10px 24px;
   border-radius: 30px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-weight: 600;
   text-transform: uppercase;
   backdrop-filter: blur(4px);
@@ -139,29 +146,47 @@ h1 {
   border-color: #e50914;
 }
 
-.movie-info { padding: 1.2rem; }
-.movie-info h3 { color: #fff; font-size: 1.1rem; margin-bottom: 0.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Montserrat', sans-serif;}
-.meta-info { display: flex; justify-content: space-between; color: #ccc; font-size: 0.9rem; }
-.type { color: #e50914; background: rgba(229, 9, 20, 0.1); padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+.movie-info {
+  padding: 1.2rem;
+}
+.movie-info h3 {
+  color: #fff;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: "Montserrat", sans-serif;
+}
 
+.meta-info {
+  display: flex;
+  justify-content: space-between;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+.type {
+  color: #e50914;
+  background: rgba(229, 9, 20, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
 
-/* ========================================= */
-/* NEW POPUP MODAL STYLES (THE FIX)     */
-/* ========================================= */
-
+/* MODAL STYLES (Kept mostly same, adjusted z-index) */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  /* Make the background overlay clickable but allow scrolling behind */
-  background-color: rgba(0, 0, 0, 0.6); 
+  background-color: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2000;
+  z-index: 9999;
   padding: 20px;
 }
 
@@ -170,32 +195,30 @@ h1 {
   border: 1px solid #333;
   color: #fff;
   width: 100%;
-  max-width: 850px; /* Wider to fit content side-by-side */
-  max-height: 85vh; /* Never taller than 85% of screen height */
+  max-width: 850px;
+  max-height: 85vh;
   border-radius: 20px;
-  overflow: hidden; /* Clean edges */
+  overflow: hidden;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
   position: relative;
-  display: flex; /* Makes the layout horizontal */
-  flex-direction: row; /* Side by side! */
+  display: flex;
+  flex-direction: row;
 }
 
-/* Left Side: The Poster */
 .modal-poster {
-  width: 40%; /* Takes up 40% of the modal width */
+  width: 40%;
   min-width: 300px;
   object-fit: cover;
   display: block;
 }
 
-/* Right Side: The Content */
 .modal-body {
   padding: 2.5rem;
-  width: 60%; /* Takes up the rest */
+  width: 60%;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Centers text vertically */
-  overflow-y: auto; /* Internal scroll only if text is HUGE */
+  justify-content: center;
+  overflow-y: auto;
 }
 
 .modal-close {
@@ -211,10 +234,12 @@ h1 {
   transition: color 0.2s;
 }
 
-.modal-close:hover { color: #fff; }
+.modal-close:hover {
+  color: #fff;
+}
 
 .modal-info h2 {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: "Bebas Neue", sans-serif;
   font-size: 3.5rem;
   line-height: 1;
   margin-bottom: 0.5rem;
@@ -229,12 +254,7 @@ h1 {
   display: flex;
   gap: 15px;
   font-weight: 500;
-}
-
-.modal-meta span {
-  display: flex;
   align-items: center;
-  gap: 5px;
 }
 
 .modal-plot {
@@ -246,20 +266,25 @@ h1 {
   padding-top: 1rem;
 }
 
-/* Mobile Fix: Stack them vertically on phones only */
+/* Mobile Media Query */
 @media screen and (max-width: 768px) {
   .modal-content {
     flex-direction: column;
     max-height: 90vh;
-    overflow-y: scroll; /* Allow scroll on mobile */
+    overflow-y: scroll;
   }
   .modal-poster {
     width: 100%;
-    height: 250px; /* Short banner style on phone */
+    height: 250px;
+    object-fit: cover;
+    object-position: top;
   }
   .modal-body {
     width: 100%;
     padding: 1.5rem;
     justify-content: flex-start;
+  }
+  .modal-info h2 {
+    font-size: 2.5rem;
   }
 }
