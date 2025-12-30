@@ -14,7 +14,7 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMovie, setSelectedMovie] = useState(null);
 
-  // 1. Search Function (TMDB)
+  // 1. Search Function
   const searchMovies = async (title) => {
     if (!title) return;
     try {
@@ -28,12 +28,9 @@ const App = () => {
     }
   };
 
-  // 2. Details Function (TMDB)
-  // We need a second call to get extra details like "Runtime" and "Director"
-  // because the search result doesn't give everything.
+  // 2. Details Function
   const fetchMovieDetail = async (id) => {
     try {
-      // Get core details
       const response = await fetch(
         `${API_URL}/movie/${id}?api_key=${API_KEY}&append_to_response=credits`
       );
@@ -44,6 +41,13 @@ const App = () => {
     }
   };
 
+  // --- NEW: Reset to Home ---
+  const resetHome = () => {
+    setSearchTerm(""); // Clear the search bar
+    searchMovies("Avengers"); // Load default movies
+    setSelectedMovie(null); // Close any open modal
+  };
+
   useEffect(() => {
     searchMovies("Avengers");
   }, []);
@@ -51,7 +55,10 @@ const App = () => {
   return (
     <>
       <div className="app">
-        <h1>CINESEARCH</h1>
+        {/* ADDED onClick AND cursor-pointer class */}
+        <h1 onClick={resetHome} style={{ cursor: "pointer" }}>
+          CINESEARCH
+        </h1>
 
         <div className="search">
           <input
@@ -84,7 +91,7 @@ const App = () => {
         )}
       </div>
 
-      {/* 3. Modal Popup */}
+      {/* Modal Popup */}
       {selectedMovie && (
         <div className="modal-overlay" onClick={() => setSelectedMovie(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -95,7 +102,6 @@ const App = () => {
               &times;
             </button>
 
-            {/* POSTER */}
             <img
               className="modal-poster"
               src={
@@ -106,19 +112,16 @@ const App = () => {
               alt={selectedMovie.title}
             />
 
-            {/* INFO */}
             <div className="modal-body">
               <div className="modal-info">
                 <h2>{selectedMovie.title}</h2>
                 <div className="modal-meta">
-                  {/* TMDB Date is YYYY-MM-DD, let's take just the Year */}
                   <span>
                     {selectedMovie.release_date
                       ? selectedMovie.release_date.split("-")[0]
                       : "N/A"}
                   </span>
                   <span>•</span>
-                  {/* Runtime is in minutes */}
                   <span>
                     {selectedMovie.runtime
                       ? `${selectedMovie.runtime} min`
@@ -133,13 +136,10 @@ const App = () => {
                   </span>
                 </div>
 
-                {/* Genres are an array in TMDB */}
                 <p>
                   <strong>Genre:</strong>{" "}
                   {selectedMovie.genres?.map((g) => g.name).join(", ")}
                 </p>
-
-                {/* Director is inside "credits.crew" */}
                 <p>
                   <strong>Director:</strong>{" "}
                   {selectedMovie.credits?.crew?.find(
